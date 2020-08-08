@@ -27,6 +27,9 @@ app.use(express.json())
 app.use('/api/user', authRoute);
 app.use('/api/post', postRoute);
 
+app.get("/", (req, res)=> {
+    res.send("Up and Running")
+})
 
 app.listen(3000, ()=>{
     console.log('Server Up and runing')
