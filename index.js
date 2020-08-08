@@ -31,6 +31,8 @@ app.get("/", (req, res)=> {
     res.send("Up and Running")
 })
 
-app.listen(3000, ()=>{
+const Port = process.env.PORT || 3000
+
+app.listen(Port, ()=>{
     console.log('Server Up and runing')
 });
