@@ -20,7 +20,7 @@ mongoose.connect(process.env.DB_CONNECT
 
 
 //middleware
-app.use(cors())
+app.options("*", cors())
 app.use(express.json())
 
 
@@ -36,5 +36,5 @@ app.get("/", (req, res)=> {
 const Port = process.env.PORT || 3000
 
 app.listen(Port, ()=>{
-    console.log('Server Up and runing')
+    console.log(`Server Up and runing ${Port}`)
 });
