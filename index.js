@@ -20,7 +20,7 @@ mongoose.connect(process.env.DB_CONNECT
 
 
 //middleware
-app.options("*", cors())
+app.options('*', cors())
 app.use(express.json())
 
 
