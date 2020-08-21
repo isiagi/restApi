@@ -3,6 +3,7 @@ const User = require("../model/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { registerVaildation, loginVaildation } = require("../validation");
+const { signToken } = require("./varifyToken");
 
 router.post("/register", async (req, res) => {
   //validate the data
@@ -35,19 +36,28 @@ router.post("/login", async (req, res) => {
   const { error } = loginVaildation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  // check if the email exists
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("email or password is wrong");
+  try {
+    // check if the email exists
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("email or password is wrong");
 
-  //PASSWORD CORRECT
-  const validPass = await bcrypt.compare(req.body.password, user.password);
-  if (!validPass) return res.status(400).send("invalid password");
-
-  //create and assign token
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-  res.header("auth-token", token).send(token);
+    //PASSWORD CORRECT
+    const validPass = await bcrypt.compare(req.body.password, user.password);
+    if (validPass) {
+      const token = signToken(user);
+      res.status(200).json({ message: "login successful", token: token });
+    } else {
+      res.status(400).send("invalid password");
+    }
+  } catch (error) {
+    res.status(400).send(err);
+  }
 
   // res.send("your logined in")
 });
 
 module.exports = router;
+
+//create and assign token
+// const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+// res.header("auth-token", token).send(token);
